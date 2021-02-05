@@ -31,6 +31,8 @@ print("Enter Half Life for Period 4")
 hl4 = 0.0175#float(input("Enter your value: "))
 print("Enter Frequency increment")
 frequ = 1.5 #float(input("Enter your value: "))
+print("Enter Phase Dispersion(radians)")
+phase = 1.57 #float(input("Enter your value: "))
 
 
 # Some example data to display
@@ -45,6 +47,7 @@ freq = np.arange(0,frequ*4800,frequ)
 freqRad = freq/(2*3.1415927)
 y8=np.array([])
 y9=np.array([])
+y10=np.array([])
 tot=0
 for b in freq:
     y7=y5*np.cos(b*x)*time
@@ -58,8 +61,16 @@ for b in freq:
         tot = tot + v
     y9=np.append(y9, [tot])
     tot=0
+for b in freq:
+    y7=y5*np.sin(b*x+phase)*time
+    for v in y7:
+        tot = tot + v
+    y10=np.append(y10, [tot])
+    tot=0
+    #=-$AD3*SIN(AX$1*$A3+$E$8)*$C$8
 f = open("absorption.txt", "w")
 t = open("frequecy.txt", "w")
+v = open("phased.txt", "w")
 for y in y8:
     f.write(str(y))
     f.write('\n')
@@ -68,6 +79,10 @@ for y in freq:
     t.write(str(y))
     t.write('\n')
 t.close()   
+for y in y10:
+    v.write(str(y))
+    v.write('\n')
+v.close()  
 # print(len(y8))
 # print(len(freqRad))   
 # print(freqRad.dtype) 
@@ -77,7 +92,7 @@ t.close()
 #=$AD2*COS(AX$1*$A2)*$C$8
 
 
-fig, axs = plt.subplots(nrows=4, ncols=2)
+fig, axs = plt.subplots(nrows=5, ncols=2)
 fig.tight_layout() 
 axs[0, 0].plot(x, y1)
 axs[0, 0].set_title('Period 1')
@@ -95,15 +110,19 @@ axs[3, 0].plot(freqRad, y8, 'tab:blue')
 axs[3, 0].set_title('Absorption Spectrum')
 axs[3, 1].plot(freqRad, y9, 'tab:blue')
 axs[3, 1].set_title('Dispersion Spectrum')
+axs[4, 0].plot(freqRad, y10, 'tab:orange')
+axs[4, 0].set_title('Phased Dispersion')
 
+#Label x and y plots
+axs[4,0].set(xlabel='Frequency(Hz)', ylabel='Intensity(A.U.)')
 axs[3,0].set(xlabel='Frequency(Hz)', ylabel='Intensity(A.I.)')
 axs[3,1].set(xlabel='Frequency(Hz)', ylabel='Intensity(A.U.)')
 axs[2,0].set(xlabel='Time', ylabel='Relative Intensity(A.I.)')
 axs[2,1].set(xlabel='Time', ylabel='Relative Intensity(A.I.)')
-axs[1,1].set(xlabel='Time', ylabel='')
-axs[1,0].set(xlabel='Time', ylabel='')
-axs[0,1].set(xlabel='Time', ylabel='')
-axs[0,0].set(xlabel='Time', ylabel='')
+axs[1,1].set(xlabel='Time', ylabel='Intensity(A.I.)')
+axs[1,0].set(xlabel='Time', ylabel='Intensity(A.I.)')
+axs[0,1].set(xlabel='Time', ylabel='Intensity(A.I.)')
+axs[0,0].set(xlabel='Time', ylabel='Intensity(A.I.)')
 
 for ax in axs.flat:
     ax.axhline(y=0, color='k')

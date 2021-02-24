@@ -2,66 +2,35 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from matplotlib.widgets import Slider, Button, TextBox
+#UI -Time, Intensity, Frequ, Integral Correction
+#Slider - Frequency, Half Life
+time = 0.00055
+frequency = 100
+intensity = 100
+frequency1 = 200
+intensity1 = 100
+frequency2 = 400
+intensity2 = 125
+frequency3 = 700
+intensity3 = 100
+hl1 = 0.14
+hl2 = 0.07
+hl3 = 0.035
+hl4 = 0.0175
+frequ = 1.5 
 
-print("Enter Time Increment for all four periods")
-#time = input("Enter your value: ")
-time = 0.00055#float(time)
-print("Enter Frequency for Period 1")
-frequency = 100#float(input("Enter your value: "))
-print("Enter Intensity for Period 1")
-intensity = 100#float(input("Enter your value: "))
-print("Enter Frequency for Period 2")
-frequency1 = 200#float(input("Enter your value: "))
-print("Enter Intensity for Period 2")
-intensity1 = 100#float(input("Enter your value: "))
-print("Enter Frequency for Period 3")
-frequency2 = 400#float(input("Enter your value: "))
-print("Enter Intensity for Period 3")
-intensity2 = 125#float(input("Enter your value: "))
-print("Enter Frequency for Period 4")
-frequency3 = 700#float(input("Enter your value: "))
-print("Enter Intensity for Period 4")
-intensity3 = 100#float(input("Enter your value: "))
-print("Enter Half Life for Period 1")
-hl1 = 0.14#float(input("Enter your value: "))
-print("Enter Half Life for Period 2")
-hl2 = 0.07#float(input("Enter your value: "))
-print("Enter Half Life for Period 3")
-hl3 = 0.035#float(input("Enter your value: "))
-print("Enter Half Life for Period 4")
-hl4 = 0.0175#float(input("Enter your value: "))
-print("Enter Frequency increment")
-frequ = 1.5 #float(input("Enter your value: "))
-print("Enter Phase Dispersion(radians)")
-phase = 1.57 #float(input("Enter your value: "))
-print("Enter Integral Correction")
-cor = 0.087 #float(input("Enter your value: "))
-print("Enter Integration Scale")
-scale = 0.08 #float(input("Enter your value: "))
-print("Enter Integration Shift")
-shift = 1 #float(input("Enter your value: "))
-print("Enter Integral Correction")
-cor1 = 0.07#float(input("Enter your value: "))
-print("Enter Integration Scale")
-scale1 = 0.05 #float(input("Enter your value: "))
-print("Enter Integration Shift")
-shift1 = 0.1 #float(input("Enter your value: "))
+#Set value - Future: additional phase value
+phase = 1.57 
+
+cor = 0.087 
+scale = 0.08 
+shift = 1 
+cor1 = 0.07
+scale1 = 0.05 
+shift1 = 0.1 
 
 #plt.ion()
 fig, axs = plt.subplots(nrows=5, ncols=2)
-
-
-#slider 
-#axfreq = plt.axes([0.25, 0.1, 0.65, 0.03])
-#sfreq = Slider(axfreq, 'time', valmin = 0.0, valmax= 0.1, valinit=time, valstep=0.00055)
-
-#button
-#resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
-#button = Button(resetax, 'Reset', hovercolor='0.975')
-
-#textbox
-
-
 x = np.arange(0,time*636,time)
 y1 = (np.cos(x*3.14*2*frequency))*intensity
 y2 = (np.cos(x*3.14*2*frequency1))*intensity1
@@ -109,9 +78,6 @@ for b in y11:
     y15=np.append(y15, [calc])
 y16 = (y15/np.max(y11))*scale1
 y17 = y16+shift1
-    
-
-
 f = open("absorption.txt", "w")
 t = open("frequecy.txt", "w")
 v = open("phased.txt", "w")
@@ -132,17 +98,6 @@ for y in y12:
     p.write(str(y))
     p.write('\n')
 p.close()   
-
-
-
-#axbox = fig.add_axes([0.1, 0.05, 0.8, 0.075])
-#text_box = TextBox(axbox, "Enter Phase Shift")
-#def submit(value):
-#    global phase = value
-#    makePlots()
-#    plt.draw()
-#text_box.on_submit(submit)
-
 
 fig.tight_layout() 
 axs[0, 0].plot(x, y1)
@@ -184,9 +139,4 @@ for ax in axs.flat:
     ax.axhline(y=0, color='k')
     ax.axvline(x=0, color='k')
     ax.grid(True, which='both')
-
-#def reset(event):
-#    sfreq.reset()
-#button.on_clicked(reset)
-
 plt.show()

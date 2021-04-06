@@ -1,18 +1,18 @@
-import matplotlib.pyplot as plt
-import numpy as np
+import matplotlib.pyplot as plt  #the graphing library con: limited UI components
+import numpy as np #libary to operate arrays
 import math
 from matplotlib.widgets import Slider, Button, TextBox
 
 #UI -Time, Intensity, Frequ, Integral Correction, phase
 #Slider - Frequency, Half Life , Aquition Time
-# make six integral corrections sliders/play with limit
-#make acquition time 
-#fix reset buttom
-#fix scaling
-# put apodization variable
+
+#alternate apodization functions
+
 
 acquTime = 636  #at/time = number points
-time = 0.00055
+time = 0.00055 #time increments
+
+#inntenisty and frequency variables for the four wave functions
 frequency = 100
 intensity = 100
 frequency1 = 200
@@ -21,16 +21,21 @@ frequency2 = 400
 intensity2 = 125
 frequency3 = 700
 intensity3 = 100
+
+#the half lifes 
 hl1 = 0.14
 hl2 = 0.07
 hl3 = 0.035
 hl4 = 0.0175
+
+#frequency increments
 frequ = 1.5 
+
+#apodization variable
 apo = 0
 
-#Set value - Future: additional phase value
+#these next six varaibles are there to manipulate the integral
 phase = 1.57 
-
 cor = 0.087 
 scale = 0.08 
 shift = 1 
@@ -39,64 +44,67 @@ scale1 = 0.05
 shift1 = 0.1 
 
 
+#set up the figure and add a margin at the bottom for the UI components
 fig,axes = plt.subplots()
 plt.subplots_adjust(bottom=0.50)
+
+#turn off graph lines
 plt.axis('off')
 
-
+#this section is where all the sliders and UI components are defined
 axcolor = 'lightgoldenrodyellow'
-resetax = plt.axes([0.8, 0.01, 0.08, 0.04])
+resetax = plt.axes([0.8, 0.05, 0.08, 0.04])
 button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
 
-ax_slide = plt.axes([0.2, 0.22, 0.65, 0.03])
+ax_slide = plt.axes([0.2, 0.32, 0.65, 0.03])
 s_factor = Slider(ax_slide, 'frequency1 (Hz)', 1, 500, valinit=100, valstep=50)
 
-ax_slide1 = plt.axes([0.2, 0.18, 0.65, 0.03])
+ax_slide1 = plt.axes([0.2, 0.29, 0.65, 0.03])
 s_factor1 = Slider(ax_slide1, 'frequency2 (Hz)', 1, 500, valinit=200, valstep=50)
 
-ax_slide2 = plt.axes([0.2, 0.14, 0.65, 0.03])
+ax_slide2 = plt.axes([0.2, 0.26, 0.65, 0.03])
 s_factor2 = Slider(ax_slide2, 'frequency3 (Hz)', 200, 700, valinit=400, valstep=50)
 
-ax_slide3 = plt.axes([0.2, 0.10, 0.65, 0.03])
+ax_slide3 = plt.axes([0.2, 0.23, 0.65, 0.03])
 s_factor3 = Slider(ax_slide3, 'frequency4 (Hz)', 400, 900, valinit=700, valstep=50)
 
-ax_slide4 = plt.axes([0.2, 0.39, 0.65, 0.03])
-s_factor4 = Slider(ax_slide4, 'intensity1 (A.I.) ', 0, 500, valinit=100, valstep=50)
+ax_slide4 = plt.axes([0.2, 0.46, 0.65, 0.03])
+s_factor4 = Slider(ax_slide4, 'intensity1 (A.I.)', 0, 500, valinit=100, valstep=50)
 
-ax_slide5 = plt.axes([0.2, 0.35, 0.65, 0.03])
+ax_slide5 = plt.axes([0.2, 0.43, 0.65, 0.03])
 s_factor5 = Slider(ax_slide5, 'intensity2 (A.I.)', 0, 500, valinit=200, valstep=50)
 
-ax_slide6 = plt.axes([0.2, 0.31, 0.65, 0.03])
+ax_slide6 = plt.axes([0.2, 0.40, 0.65, 0.03])
 s_factor6 = Slider(ax_slide6, 'intensity3 (A.I.)', 0, 500, valinit=100, valstep=50)
 
-ax_slide7 = plt.axes([0.2, 0.27, 0.65, 0.03])
+ax_slide7 = plt.axes([0.2, 0.37, 0.65, 0.03])
 s_factor7 = Slider(ax_slide7, 'intenisty4 (A.I.)', 0, 500, valinit=100, valstep=50)
 
-axbox = plt.axes([0.2, 0.05, 0.65, 0.03])
+axbox = plt.axes([0.2, 0.18, 0.65, 0.03])
 text_box = TextBox(axbox, 'Time (s)', initial=0.00055)
 
-ax_slide8 = plt.axes([0.2, 0.65, 0.65, 0.03])
+ax_slide8 = plt.axes([0.2, 0.69, 0.65, 0.03])
 s_factor8 = Slider(ax_slide8, 'T2 1 (s)', 0, 1, valinit=0.14, valstep=0.001)
 
-ax_slide9 = plt.axes([0.2, 0.60, 0.65, 0.03])
+ax_slide9 = plt.axes([0.2, 0.66, 0.65, 0.03])
 s_factor9 = Slider(ax_slide9, 'T2 2 (s)', 0, 1, valinit=0.07, valstep=0.001)
 
-ax_slide10 = plt.axes([0.2, 0.55, 0.65, 0.03])
+ax_slide10 = plt.axes([0.2, 0.63, 0.65, 0.03])
 s_factor10 = Slider(ax_slide10, 'T2 3 (s)', 0, 1, valinit=0.035, valstep=0.001)
 
-ax_slide11= plt.axes([0.2, 0.5, 0.65, 0.03])
+ax_slide11= plt.axes([0.2, 0.60, 0.65, 0.03])
 s_factor11 = Slider(ax_slide11, 'T2 4 (s)', 0, 1, valinit=0.0175, valstep=0.001)
 
-ax_slide12= plt.axes([0.2, 0.42, 0.65, 0.03])
+ax_slide12= plt.axes([0.2, 0.55, 0.65, 0.03])
 s_factor12 = Slider(ax_slide12, 'Acquition Time', 300, 1000, valinit=636, valstep=50)
 
-axbox9 = plt.axes([0.2, 0.46, 0.65, 0.03])
+axbox9 = plt.axes([0.2, 0.51, 0.65, 0.03])
 text_box9 = TextBox(axbox9, 'Apodization', initial=0)
 
-axbox1 = plt.axes([0.2, 0.7, 0.65, 0.03])
+axbox1 = plt.axes([0.2, 0.73, 0.65, 0.03])
 text_box1 = TextBox(axbox1, 'Phase', initial=1.57)
 
-axbox2 = plt.axes([0.2, 0.74, 0.65, 0.03])
+axbox2 = plt.axes([0.2, 0.76, 0.65, 0.03])
 text_box2 = TextBox(axbox2, 'Frequency Step', initial=1.5)
 
 axbox3 = plt.axes([0.2, 0.80, 0.65, 0.03])
@@ -117,29 +125,38 @@ text_box7 = TextBox(axbox7, 'Scale Combined Phase', initial=0.05)
 axbox8 = plt.axes([0.2, 0.97, 0.65, 0.03])
 text_box8 = TextBox(axbox8, 'Shift Combined Phase', initial=0.1)
 
-#plt.ion()
+
+#Makes the second figure and makes 10 seperate smaller graphs 
 fig, axs = plt.subplots(nrows=5, ncols=2)
 plt.subplots_adjust(bottom=0.25)
 x = np.arange(0,time*acquTime,time)
+
+#sets the apodization variable to 0, but need this for the divide by 0 error thrown
 if (apo!=0):
     e = np.arange(0,apo*acquTime,apo)
 else:
     e=1
 
+#These y variables are arrays with all the points needed to plot the graphs
+y1 = (np.cos(x*3.14*2*frequency))*intensity    #Period 1
+y2 = (np.cos(x*3.14*2*frequency1))*intensity1   #Period 2 
+y3 = (np.cos(x*3.14*2*frequency2))*intensity2   #Period 3
+y4 = (np.cos(x*3.14*2*frequency3))*intensity3    #Period 4
+y5 = (y1*2.718**(-x/hl1)+y2*2.718**(-x/hl2)+y3*2.718**(-x/hl3)+y4*2.718**(-x/hl4))*(2.718**e)   #Combined FID
+y6 = y1*2.718**(-x/hl1)  #Fid for Period 1
+freq = np.arange(0,frequ*4800,frequ) #x values for next set of functions
+freqRad = freq/(2*3.1415927)  #x values divided by 2 pi to make the period
 
-y1 = (np.cos(x*3.14*2*frequency))*intensity
-y2 = (np.cos(x*3.14*2*frequency1))*intensity1
-y3 = (np.cos(x*3.14*2*frequency2))*intensity2
-y4 = (np.cos(x*3.14*2*frequency3))*intensity3
-y5 = (y1*2.718**(-x/hl1)+y2*2.718**(-x/hl2)+y3*2.718**(-x/hl3)+y4*2.718**(-x/hl4))*(2.718**e)
-y6 = y1*2.718**(-x/hl1)
-freq = np.arange(0,frequ*4800,frequ)
-freqRad = freq/(2*3.1415927)
+#set the empty arrays for the next graphs
 y8=np.array([])
 y9=np.array([])
 y10=np.array([])
 y12 = np.array([])
+y19 = np.array([])
+
+#counter for the total sum
 tot=0
+#Absorption Spectrum, Dispersion Spectrum, and combined Calculations
 for b in freq:
     y7=y5*np.cos(b*x)*time
     for v in y7:
@@ -158,6 +175,12 @@ for b in freq:
         tot = tot + v
     y10=np.append(y10, [tot])
     tot=0
+for b in freq:
+    y7=y5*np.sin(b*x)*time
+    for v in y7:
+        tot = tot + v
+    y19=np.append(y19, [tot])
+    tot=0
 last = 0
 for b in y8:
     calc = b +last -cor
@@ -165,7 +188,8 @@ for b in y8:
     y12=np.append(y12, [calc])
 y13 = (y12/np.max(y8))*scale
 y14 = y13+shift
-y11=np.sqrt(y8**2+y10**2)
+y11=np.sqrt(y8**2+y19**2)
+y18=np.sqrt(y8**2+y10**2)
 y15 = np.array([])
 for b in y11:
     calc = b +last -cor1
@@ -173,6 +197,8 @@ for b in y11:
     y15=np.append(y15, [calc])
 y16 = (y15/np.max(y11))*scale1
 y17 = y16+shift1
+
+#Write the y values to a text document as labeled below
 f = open("absorption.txt", "w")
 t = open("frequecy.txt", "w")
 v = open("phased.txt", "w")
@@ -194,6 +220,7 @@ for y in y12:
     p.write('\n')
 p.close()   
 
+#Take the x and y values found above and plot them on the figure
 fig.tight_layout() 
 d, = axs[0,0].plot(x, y1)
 axs[0,0].set_title('Period 1')
@@ -212,12 +239,11 @@ axs[3, 0].set_title('Absorption Spectrum')
 d7,=axs[3, 1].plot(freqRad, y9, 'tab:blue')
 d8,=axs[3, 0].plot(freqRad, y14, 'tab:orange')
 axs[3, 1].set_title('Dispersion Spectrum')
-d9,=axs[4, 0].plot(freqRad, y10, 'tab:orange')
-axs[4, 0].set_title('Phased Dispersion')
-d10,=axs[4, 1].plot(freqRad, y11, 'tab:orange')
+d9,=axs[4, 0].plot(freqRad, y11, 'tab:orange')
+axs[4, 0].set_title('Combined Absorption and Dispersion')
+d10,=axs[4, 1].plot(freqRad, y18, 'tab:orange')
 d11,=axs[4, 1].plot(freqRad, y17, 'tab:red')
 axs[4, 1].set_title('Combined Phase Absorption and Dispersion')
-
 axs[4,1].set(xlabel='Frequency(Hz)', ylabel='Intensity(A.U.)')
 axs[4,0].set(xlabel='Frequency(Hz)', ylabel='Intensity(A.U.)')
 axs[3,0].set(xlabel='Frequency(Hz)', ylabel='Intensity(A.I.)')
@@ -228,11 +254,12 @@ axs[1,1].set(xlabel='Time', ylabel='Intensity(A.I.)')
 axs[1,0].set(xlabel='Time', ylabel='Intensity(A.I.)')
 axs[0,1].set(xlabel='Time', ylabel='Intensity(A.I.)')
 axs[0,0].set(xlabel='Time', ylabel='Intensity(A.I.)')
-
 for ax in axs.flat:
     ax.axhline(y=0, color='k')
     ax.axvline(x=0, color='k')
     ax.grid(True, which='both')
+
+#This function resets all the values on the UI page to their original values as well as sets the graphs back to their original state
 def reset(event):
     s_factor.reset()
     s_factor1.reset()
@@ -246,9 +273,19 @@ def reset(event):
     s_factor9.reset()
     s_factor10.reset()
     s_factor11.reset()
-    # text_box.
-    # text_box2.reset()
-    # text_box1.reset()
+    s_factor12.reset()
+    text_box.set_val(0.00055)
+    text_box1.set_val(1.57)
+    text_box2.set_val(1.5)
+    text_box3.set_val(0.087)
+    text_box4.set_val(0.08)
+    text_box5.set_val(1) 
+    text_box6.set_val(0.07)
+    text_box7.set_val(0.05)
+    text_box8.set_val(0.1)
+    text_box9.set_val(0)
+
+#THis function redos everything from above as soon as a user changes any of the UI components
 def update(val):
     newFreq = s_factor.val
     newFreq1 = s_factor1.val
@@ -290,6 +327,7 @@ def update(val):
     y9=np.array([])
     y10=np.array([])
     y12 = np.array([])
+    y19 = np.array([])
     tot=0
     for b in freq:
         y7=y5*np.cos(b*x)*time
@@ -309,6 +347,12 @@ def update(val):
             tot = tot + v
         y10=np.append(y10, [tot])
         tot=0
+    for b in freq:
+        y7=y5*np.sin(b*x)*time
+        for v in y7:
+            tot = tot + v
+        y19=np.append(y19, [tot])
+        tot=0
     last = 0
     for b in y8:
         calc = b +last -cor
@@ -316,7 +360,8 @@ def update(val):
         y12=np.append(y12, [calc])
     y13 = (y12/np.max(y8))*scale
     y14 = y13+shift
-    y11=np.sqrt(y8**2+y10**2)
+    y11=np.sqrt(y8**2+y19**2)
+    y18=np.sqrt(y8**2+y10**2)
     y15 = np.array([])
     for b in y11:
         calc = b +last -cor1
@@ -324,6 +369,27 @@ def update(val):
         y15=np.append(y15, [calc])
     y16 = (y15/np.max(y11))*scale1
     y17 = y16+shift1
+    f = open("absorption.txt", "w")
+    t = open("frequecy.txt", "w")
+    v = open("phased.txt", "w")
+    p = open("integral.txt", "w")
+    for y in y8:
+        f.write(str(y))
+        f.write('\n')
+    f.close()   
+    for y in freq:
+        t.write(str(y))
+        t.write('\n')
+    t.close()   
+    for y in y10:
+        v.write(str(y))
+        v.write('\n')
+    v.close() 
+    for y in y12:
+        p.write(str(y))
+        p.write('\n')
+    p.close()   
+    #resets the data of the UI slider/UI that was changed
     d.set_ydata(y1)
     d.set_xdata(x)
     d1.set_ydata(y2)
@@ -342,9 +408,9 @@ def update(val):
     d7.set_xdata(freqRad)
     d8.set_ydata(y14)
     d8.set_xdata(freqRad)
-    d9.set_ydata(y10)
+    d9.set_ydata(y11)
     d9.set_xdata(freqRad)
-    d10.set_ydata(y11)
+    d10.set_ydata(y18)
     d10.set_xdata(freqRad)
     d11.set_ydata(y17)
     d11.set_xdata(freqRad)
@@ -362,13 +428,12 @@ def update(val):
     axs[1,0].set_ylim(-inten2,inten2)
     axs[1,1].set_ylim(-inten3,inten3)
     axs[2,0].set_ylim(-inten,inten)
-
-    
+   
     #redrawing the figure
     fig.canvas.draw()
 
 
-
+#these set of lines listen to when a UI component is changed and calls the update function if so
 s_factor.on_changed(update)
 s_factor1.on_changed(update)
 s_factor2.on_changed(update)
@@ -394,4 +459,5 @@ text_box8.on_submit(update)
 text_box9.on_submit(update)
 button.on_clicked(reset)
 
+#displays everything on the figures
 plt.show()

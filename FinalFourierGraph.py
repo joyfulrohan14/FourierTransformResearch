@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt  # the graphing library con: limited UI components
 import numpy as np  # libary to operate arrays
 import math
-from matplotlib.widgets import Slider, Button, TextBox
+from matplotlib.widgets import Slider, Button, TextBox, RadioButtons
 
 # UI -Time, Intensity, Frequ, Integral Correction, phase
 # Slider - Frequency, Half Life , Aquition Time
-
 
 # User input acquition, second number is FID acquition time divided by number of points to get time incremenets
 # Grab the file
@@ -36,7 +35,12 @@ hl4 = 0.0175
 frequ = 1.5
 
 # apodization variable
+# Apodization: 1-exponential 2-sine 3-sinesquared 4- shifted sine 5 shifted sinesquared
 apo = 0
+sapo = 0
+s2apo = 0
+ssapo = 0
+ss2apo = 0
 
 # these next six varaibles are there to manipulate the integral
 phase = 1.57
@@ -57,41 +61,41 @@ plt.axis('off')
 
 # this section is where all the sliders and UI components are defined
 axcolor = 'lightgoldenrodyellow'
-resetax = plt.axes([0.8, 0.05, 0.08, 0.04])
+resetax = plt.axes([0.9, 0.05, 0.08, 0.04])
 button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
 
-ax_slide = plt.axes([0.2, 0.32, 0.65, 0.03])
+ax_slide = plt.axes([0.2, 0.19, 0.65, 0.03])
 s_factor = Slider(ax_slide, 'frequency1 (Hz)', 1, 500, valinit=100, valstep=50)
 
-ax_slide1 = plt.axes([0.2, 0.29, 0.65, 0.03])
+ax_slide1 = plt.axes([0.2, 0.16, 0.65, 0.03])
 s_factor1 = Slider(ax_slide1, 'frequency2 (Hz)',
                    1, 500, valinit=200, valstep=50)
 
-ax_slide2 = plt.axes([0.2, 0.26, 0.65, 0.03])
+ax_slide2 = plt.axes([0.2, 0.13, 0.65, 0.03])
 s_factor2 = Slider(ax_slide2, 'frequency3 (Hz)',
                    200, 700, valinit=400, valstep=50)
 
-ax_slide3 = plt.axes([0.2, 0.23, 0.65, 0.03])
+ax_slide3 = plt.axes([0.2, 0.1, 0.65, 0.03])
 s_factor3 = Slider(ax_slide3, 'frequency4 (Hz)',
                    400, 900, valinit=700, valstep=50)
 
-ax_slide4 = plt.axes([0.2, 0.46, 0.65, 0.03])
+ax_slide4 = plt.axes([0.2, 0.32, 0.65, 0.03])
 s_factor4 = Slider(ax_slide4, 'intensity1 (A.I.)',
                    0, 500, valinit=100, valstep=50)
 
-ax_slide5 = plt.axes([0.2, 0.43, 0.65, 0.03])
+ax_slide5 = plt.axes([0.2, 0.29, 0.65, 0.03])
 s_factor5 = Slider(ax_slide5, 'intensity2 (A.I.)',
                    0, 500, valinit=200, valstep=50)
 
-ax_slide6 = plt.axes([0.2, 0.40, 0.65, 0.03])
+ax_slide6 = plt.axes([0.2, 0.26, 0.65, 0.03])
 s_factor6 = Slider(ax_slide6, 'intensity3 (A.I.)',
                    0, 500, valinit=100, valstep=50)
 
-ax_slide7 = plt.axes([0.2, 0.37, 0.65, 0.03])
+ax_slide7 = plt.axes([0.2, 0.23, 0.65, 0.03])
 s_factor7 = Slider(ax_slide7, 'intenisty4 (A.I.)',
                    0, 500, valinit=100, valstep=50)
 
-axbox = plt.axes([0.2, 0.18, 0.65, 0.03])
+axbox = plt.axes([0.2, 0.06, 0.65, 0.03])
 text_box = TextBox(axbox, 'Time (s)', initial=0.00055)
 
 ax_slide8 = plt.axes([0.2, 0.69, 0.65, 0.03])
@@ -111,8 +115,23 @@ ax_slide12 = plt.axes([0.2, 0.55, 0.65, 0.03])
 s_factor12 = Slider(ax_slide12, 'Acquition Time', 300,
                     1000, valinit=636, valstep=50)
 
-axbox9 = plt.axes([0.2, 0.51, 0.65, 0.03])
-text_box9 = TextBox(axbox9, 'Apodization', initial=0)
+rax = plt.axes([0, 0.39, 0.25, 0.15], facecolor=axcolor)
+radio2 = RadioButtons(rax, ('none','exponential','sine', 'sine-squared'))
+
+axbox9 = plt.axes([0.45, 0.48, 0.50, 0.05])
+text_box9 = TextBox(axbox9, 'Exponential Apodization', initial=0)
+
+axbox10 = plt.axes([0.45, 0.42, 0.50, 0.05])
+text_box10 = TextBox(axbox10, 'Shift Value Apodization', initial=0)
+
+# axbox11 = plt.axes([0.2, 0.42, 0.65, 0.03])
+# text_box11 = TextBox(axbox11, 'Sine Squared Apodization', initial=0)
+
+# axbox12 = plt.axes([0.2, 0.42, 0.65, 0.03])
+# text_box12 = TextBox(axbox12, 'Shifted sine Apodization', initial="0")
+
+# axbox13 = plt.axes([0.2, 0.39, 0.65, 0.03])
+# text_box13 = TextBox(axbox13, 'Shifted Sine^2 Apodization', initial="")
 
 axbox1 = plt.axes([0.2, 0.73, 0.65, 0.03])
 text_box1 = TextBox(axbox1, 'Phase', initial=1.57)
@@ -147,6 +166,7 @@ x = np.arange(0, time*acquTime, time)
 # sets the apodization variable to 0, but need this for the divide by 0 error thrown
 if (apo != 0):
     e = np.arange(0, apo*acquTime, apo)
+
 else:
     e = 1
 
@@ -213,26 +233,26 @@ y16 = (y15/np.max(y11))*scale1
 y17 = y16+shift1
 
 # Write the y values to a text document as labeled below
-f = open("absorption.txt", "w")
-t = open("frequecy.txt", "w")
-v = open("phased.txt", "w")
-p = open("integral.txt", "w")
-for y in y8:
-    f.write(str(y))
-    f.write('\n')
-f.close()
-for y in freq:
-    t.write(str(y))
-    t.write('\n')
-t.close()
-for y in y10:
-    v.write(str(y))
-    v.write('\n')
-v.close()
-for y in y12:
-    p.write(str(y))
-    p.write('\n')
-p.close()
+# f = open("absorption.txt", "w")
+# t = open("frequecy.txt", "w")
+# v = open("phased.txt", "w")
+# p = open("integral.txt", "w")
+# for y in y8:
+#     f.write(str(y))
+#     f.write('\n')
+# f.close()
+# for y in freq:
+#     t.write(str(y))
+#     t.write('\n')
+# t.close()
+# for y in y10:
+#     v.write(str(y))
+#     v.write('\n')
+# v.close()
+# for y in y12:
+#     p.write(str(y))
+#     p.write('\n')
+# p.close()
 
 # Take the x and y values found above and plot them on the figure
 fig.tight_layout()
@@ -300,6 +320,8 @@ def reset(event):
     text_box7.set_val(0.05)
     text_box8.set_val(0.1)
     text_box9.set_val(0)
+    text_box10.set_val(0)
+
 
 # THis function redos everything from above as soon as a user changes any of the UI components
 
@@ -328,8 +350,28 @@ def update(val):
     scale1 = float(text_box7.text)
     shift1 = float(text_box8.text)
     apo = float(text_box9.text)
-    if (apo != 0):
-        e = np.arange(0, apo*acquTime, apo)
+    sapo = float(text_box10.text)
+    keyword=radio2.value_selected
+    if (keyword=='none'):
+        e=1
+        text_box10.set_val(0)
+    elif(keyword=='exponential'):
+        f = np.arange(0, apo*acquTime, apo)
+        e = 2.718**f
+    # elif (keyword=='sine-unshifted'):
+    #     f=np.arange(0, acquTime, 1)
+    #     e=np.sin((3.14159*f)/acquTime)
+    #     for x in e:
+    #         print(x)
+    # elif(keyword=='sine-squared unshifted'):
+    #     f=np.arange(0, acquTime, 1)
+    #     e = (np.sin((3.14159*f)/acquTime))**2
+    elif(keyword=='sine"'):
+        f=np.arange(0, acquTime, 1)
+        e=np.sin((((3.14159-sapo)*f)/acquTime)+sapo)
+    elif(keyword=='sine-squared'):
+        f=np.arange(0, acquTime, 1)
+        e=(np.sin((((3.14159-sapo)*f)/acquTime)+sapo))**2
     else:
         e = 1
     x = np.arange(0, time*acquTime, time)
@@ -338,7 +380,7 @@ def update(val):
     y3 = (np.cos(x*3.14*2*newFreq2))*inten2
     y4 = (np.cos(x*3.14*2*newFreq3))*inten3
     y5 = (y1*2.718**(-x/hl1)+y2*2.718**(-x/hl2)+y3 *
-          2.718**(-x/hl3)+y4*2.718**(-x/hl4))*(2.718**e)
+          2.718**(-x/hl3)+y4*2.718**(-x/hl4))*(e)
     y6 = y1*2.718**(-x/hl1)
     freq = np.arange(0, frequ*4800, frequ)
     freqRad = freq/(2*3.1415927)
@@ -388,26 +430,26 @@ def update(val):
         y15 = np.append(y15, [calc])
     y16 = (y15/np.max(y11))*scale1
     y17 = y16+shift1
-    f = open("absorption.txt", "w")
-    t = open("frequecy.txt", "w")
-    v = open("phased.txt", "w")
-    p = open("integral.txt", "w")
-    for y in y8:
-        f.write(str(y))
-        f.write('\n')
-    f.close()
-    for y in freq:
-        t.write(str(y))
-        t.write('\n')
-    t.close()
-    for y in y10:
-        v.write(str(y))
-        v.write('\n')
-    v.close()
-    for y in y12:
-        p.write(str(y))
-        p.write('\n')
-    p.close()
+    # f = open("absorption.txt", "w")
+    # t = open("frequecy.txt", "w")
+    # v = open("phased.txt", "w")
+    # p = open("integral.txt", "w")
+    # for y in y8:
+    #     f.write(str(y))
+    #     f.write('\n')
+    # f.close()
+    # for y in freq:
+    #     t.write(str(y))
+    #     t.write('\n')
+    # t.close()
+    # for y in y10:
+    #     v.write(str(y))
+    #     v.write('\n')
+    # v.close()
+    # for y in y12:
+    #     p.write(str(y))
+    #     p.write('\n')
+    # p.close()
     # resets the data of the UI slider/UI that was changed
     d.set_ydata(y1)
     d.set_xdata(x)
@@ -436,17 +478,33 @@ def update(val):
     # update ax.viewLim using the new dataLim
     axs[0, 0].set_xlim(0, 636*time)
     axs[0, 1].set_xlim(0, 636*time)
-    axs[1, 0].set_xlim(0, 636*time)
-    axs[1, 1].set_xlim(0, 636*time)
-    axs[2, 0].set_xlim(0, 636*time)
-    axs[2, 1].set_xlim(0, 636*time)
     axs[0, 0].set_ylim(-(inten), inten)
     axs[0, 1].set_ylim(-inten1, inten1)
+
+    axs[1, 0].set_xlim(0, 636*time)
+    axs[1, 1].set_xlim(0, 636*time)
     axs[1, 0].set_ylim(-inten2, inten2)
     axs[1, 1].set_ylim(-inten3, inten3)
-    axs[1, 0].set_ylim(-inten2, inten2)
-    axs[1, 1].set_ylim(-inten3, inten3)
+
+    axs[2, 0].set_xlim(0, 636*time)
+    axs[2, 1].set_xlim(0, 636*time)
     axs[2, 0].set_ylim(-inten, inten)
+    axs[2, 1].set_ylim(min(y5), max(y5))
+
+    # axs[3, 0].set_xlim(0,max(freqRad))
+    # axs[3, 1].set_xlim(0,max(freqRad))
+    # axs[3, 0].set_ylim(0, max(y9))
+    # axs[3, 1].set_ylim(0, max(y14))
+
+    # axs[4, 0].set_xlim(0,max(freqRad))
+    # axs[4, 1].set_xlim(0,max(freqRad))
+    # axs[4, 0].set_ylim(0, max(y11))
+    # axs[4, 1].set_ylim(0, max(y18))
+
+
+
+
+
 
     # redrawing the figure
     fig.canvas.draw()
@@ -477,6 +535,7 @@ text_box7.on_submit(update)
 text_box8.on_submit(update)
 text_box9.on_submit(update)
 button.on_clicked(reset)
+radio2.on_clicked(update)
 
 # displays everything on the figures
 plt.show()

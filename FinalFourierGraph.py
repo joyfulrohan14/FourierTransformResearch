@@ -65,19 +65,19 @@ resetax = plt.axes([0.9, 0.05, 0.08, 0.04])
 button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
 
 ax_slide = plt.axes([0.2, 0.19, 0.65, 0.03])
-s_factor = Slider(ax_slide, 'frequency1 (Hz)', 1, 500, valinit=100, valstep=50)
+s_factor = Slider(ax_slide, 'frequency1 (Hz)', 1, 900, valinit=100, valstep=50)
 
 ax_slide1 = plt.axes([0.2, 0.16, 0.65, 0.03])
 s_factor1 = Slider(ax_slide1, 'frequency2 (Hz)',
-                   1, 500, valinit=200, valstep=50)
+                   1, 900, valinit=200, valstep=50)
 
 ax_slide2 = plt.axes([0.2, 0.13, 0.65, 0.03])
 s_factor2 = Slider(ax_slide2, 'frequency3 (Hz)',
-                   200, 700, valinit=400, valstep=50)
+                   1, 900, valinit=400, valstep=50)
 
 ax_slide3 = plt.axes([0.2, 0.1, 0.65, 0.03])
 s_factor3 = Slider(ax_slide3, 'frequency4 (Hz)',
-                   400, 900, valinit=700, valstep=50)
+                   1, 900, valinit=700, valstep=50)
 
 ax_slide4 = plt.axes([0.2, 0.32, 0.65, 0.03])
 s_factor4 = Slider(ax_slide4, 'intensity1 (A.I.)',
@@ -118,43 +118,34 @@ s_factor12 = Slider(ax_slide12, 'Acquition Time', 300,
 rax = plt.axes([0, 0.39, 0.25, 0.15], facecolor=axcolor)
 radio2 = RadioButtons(rax, ('none','exponential','sine', 'sine-squared'))
 
-axbox9 = plt.axes([0.45, 0.48, 0.50, 0.05])
+axbox9 = plt.axes([0.6, 0.48, 0.20, 0.05])
 text_box9 = TextBox(axbox9, 'Exponential Apodization', initial=0)
 
-axbox10 = plt.axes([0.45, 0.42, 0.50, 0.05])
+axbox10 = plt.axes([0.6, 0.42, 0.20, 0.05])
 text_box10 = TextBox(axbox10, 'Shift Value Apodization', initial=0)
 
-# axbox11 = plt.axes([0.2, 0.42, 0.65, 0.03])
-# text_box11 = TextBox(axbox11, 'Sine Squared Apodization', initial=0)
-
-# axbox12 = plt.axes([0.2, 0.42, 0.65, 0.03])
-# text_box12 = TextBox(axbox12, 'Shifted sine Apodization', initial="0")
-
-# axbox13 = plt.axes([0.2, 0.39, 0.65, 0.03])
-# text_box13 = TextBox(axbox13, 'Shifted Sine^2 Apodization', initial="")
-
-axbox1 = plt.axes([0.2, 0.73, 0.65, 0.03])
+axbox1 = plt.axes([0.4, 0.73, 0.20, 0.03])
 text_box1 = TextBox(axbox1, 'Phase', initial=1.57)
 
-axbox2 = plt.axes([0.2, 0.76, 0.65, 0.03])
+axbox2 = plt.axes([0.4, 0.76, 0.2, 0.03])
 text_box2 = TextBox(axbox2, 'Frequency Step', initial=1.5)
 
-axbox3 = plt.axes([0.2, 0.80, 0.65, 0.03])
+axbox3 = plt.axes([0.4, 0.80, 0.2, 0.03])
 text_box3 = TextBox(axbox3, 'Corection Absorption ', initial=0.087)
 
-axbox4 = plt.axes([0.2, 0.83, 0.65, 0.03])
+axbox4 = plt.axes([0.4, 0.83, 0.2, 0.03])
 text_box4 = TextBox(axbox4, 'Scale Absorption', initial=0.08)
 
-axbox5 = plt.axes([0.2, 0.86, 0.65, 0.03])
+axbox5 = plt.axes([0.4, 0.86, 0.2, 0.03])
 text_box5 = TextBox(axbox5, 'Shift Absorption', initial=1)
 
-axbox6 = plt.axes([0.2, 0.91, 0.65, 0.03])
+axbox6 = plt.axes([0.4, 0.91, 0.2, 0.03])
 text_box6 = TextBox(axbox6, 'Corection Combined Phase ', initial=0.07)
 
-axbox7 = plt.axes([0.2, 0.94, 0.65, 0.03])
+axbox7 = plt.axes([0.4, 0.94, 0.2, 0.03])
 text_box7 = TextBox(axbox7, 'Scale Combined Phase', initial=0.05)
 
-axbox8 = plt.axes([0.2, 0.97, 0.65, 0.03])
+axbox8 = plt.axes([0.4, 0.97, 0.2, 0.03])
 text_box8 = TextBox(axbox8, 'Shift Combined Phase', initial=0.1)
 
 
@@ -366,7 +357,7 @@ def update(val):
     # elif(keyword=='sine-squared unshifted'):
     #     f=np.arange(0, acquTime, 1)
     #     e = (np.sin((3.14159*f)/acquTime))**2
-    elif(keyword=='sine"'):
+    elif(keyword=='sine'):
         f=np.arange(0, acquTime, 1)
         e=np.sin((((3.14159-sapo)*f)/acquTime)+sapo)
     elif(keyword=='sine-squared'):

@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt  # the graphing library con: limited UI componen
 import numpy as np  # libary to operate arrays
 import math
 from matplotlib.widgets import Slider, Button, TextBox, RadioButtons
-import scipy.fftpack
 
 # UI -Time, Intensity, Frequ, Integral Correction, phase
 # Slider - Frequency, Half Life , Aquition Time

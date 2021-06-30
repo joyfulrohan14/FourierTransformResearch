@@ -12,6 +12,9 @@ from matplotlib.widgets import Slider, Button, TextBox, RadioButtons
 # alternate apodization functions
 
 
+#fft toggle
+fftVar = input("Would you like to use fft function to speed up results (Y for yes and N for no)\n")
+
 acquTime = 636  # at/time = number points
 time = 0.00055  # time increments
 
@@ -161,7 +164,7 @@ else:
     e = 1
 
 # These y variables are arrays with all the points needed to plot the graphs
-y1 = (np.cos(x*3.14*2*frequency))*intensity  # Period 1
+y1 =(np.cos(x*3.14*2*frequency))*intensity  # Period 1
 y2 = (np.cos(x*3.14*2*frequency1))*intensity1  # Period 2
 y3 = (np.cos(x*3.14*2*frequency2))*intensity2  # Period 3
 y4 = (np.cos(x*3.14*2*frequency3))*intensity3  # Period 4
@@ -181,6 +184,8 @@ y19 = np.array([])
 # counter for the total sum
 tot = 0
 # Absorption Spectrum, Dispersion Spectrum, and combined Calculations
+
+# make a fft toggle and only effects the for statements
 for b in freq:
     y7 = y5*np.cos(b*x)*time
     for v in y7:
@@ -213,7 +218,11 @@ for b in y8:
 y13 = (y12/np.max(y8))*scale
 y14 = y13+shift
 y11 = np.sqrt(y8**2+y19**2)
-y18 = np.sqrt(y8**2+y10**2)
+if fftVar=='N':
+    y18 = np.sqrt(y8**2+y10**2)
+else:
+    y18 = np.sqrt(y8**2+y10**2)
+    #y18 = np.fft.fft(y5)
 y15 = np.array([])
 for b in y11:
     calc = b + last - cor1
@@ -246,8 +255,6 @@ y17 = y16+shift1
 
 # Makes the second figure and makes 10 seperate smaller graphs
 fig = plt.figure()
-
-plt.tight_layout()
 # Take the x and y values found above and plot them on the figure
 ax1 = plt.subplot2grid(shape=(5, 2), loc=(0, 0))
 ax2 = plt.subplot2grid(shape=(5, 2), loc=(0, 1))
@@ -315,7 +322,6 @@ ax9.axhline(y=0, color='k')
 ax9.axvline(x=0, color='k')
 ax9.grid(True, which='both')
 
-
 # This function resets all the values on the UI page to their original values as well as sets the graphs back to their original state
 def reset(event):
     s_factor.reset()
@@ -345,8 +351,6 @@ def reset(event):
 
 
 # THis function redos everything from above as soon as a user changes any of the UI components
-
-
 def update(val):
     newFreq = s_factor.val
     newFreq1 = s_factor1.val
@@ -552,4 +556,5 @@ button.on_clicked(reset)
 radio2.on_clicked(update)
 
 # displays everything on the figures
+plt.tight_layout(pad=0, w_pad=-2, h_pad=-2)
 plt.show()

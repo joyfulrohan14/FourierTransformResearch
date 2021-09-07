@@ -10,23 +10,30 @@ from matplotlib.widgets import Slider, Button, TextBox, RadioButtons
 # Grab the file
 
 # alternate apodization functions
+#code starts
+fileName = "ascii-fid1.txt"#input("Please enter file name with data (format point number, number): ")
+acquTime = input("Enter the time (s) that it took to acquire your data: ")
+fid = []
+n = []
+f = open("test.txt", "w")
+with open(fileName, "r") as fp:
+    line = fp.readline()
+    while line:
+        x = line.split(", ")
+        n.append(x[0])
+        fid.append(x[1])
+        f.write(x[1])
+        line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
+        line = fp.readline()
+f.close()
 
-
-#fft toggle
-fftVar = input("Would you like to use fft function to speed up results (Y for yes and N for no)\n")
-
-acquTime = 636  # at/time = number points
-time = 0.00055  # time increments
-
-# inntenisty and frequency variables for the four wave functions
-frequency = 100
-intensity = 100
-frequency1 = 200
-intensity1 = 100
-frequency2 = 400
-intensity2 = 125
-frequency3 = 700
-intensity3 = 100
+time = float(float(acquTime)/len(fid))
+y5 = (fid)
 
 # the half lifes
 hl1 = 0.14
@@ -152,27 +159,17 @@ axbox8 = plt.axes([0.4, 0.97, 0.2, 0.03])
 text_box8 = TextBox(axbox8, 'Shift Combined Phase', initial=0.1)
 
 
-
-#plt.subplots_adjust(bottom=0.25)
-x = np.arange(0, time*acquTime, time)
-
 # sets the apodization variable to 0, but need this for the divide by 0 error thrown
 if (apo != 0):
     e = np.arange(0, apo*acquTime, apo)
 
 else:
     e = 1
-
-# These y variables are arrays with all the points needed to plot the graphs
-y1 =(np.cos(x*3.14*2*frequency))*intensity  # Period 1
-y2 = (np.cos(x*3.14*2*frequency1))*intensity1  # Period 2
-y3 = (np.cos(x*3.14*2*frequency2))*intensity2  # Period 3
-y4 = (np.cos(x*3.14*2*frequency3))*intensity3  # Period 4
-y5 = (y1*2.718**(-x/hl1)+y2*2.718**(-x/hl2)+y3*2.718 **
-      (-x/hl3)+y4*2.718**(-x/hl4))*(2.718**e)  # Combined FID
-y6 = y1*2.718**(-x/hl1)  # Fid for Period 1
-freq = np.arange(0, frequ*4800, frequ)  # x values for next set of functions
-freqRad = freq/(2*3.1415927)  # x values divided by 2 pi to make the period
+frequ = 1.5
+freq = np.arange(2820, 2820 + frequ*len(fid), frequ)
+freqRad = freq/(2*3.1415927)
+y5= [float(x) for x in y5]
+x = np.arange(0, float(acquTime), time) 
 
 # set the empty arrays for the next graphs
 y8 = np.array([])
@@ -184,6 +181,8 @@ y19 = np.array([])
 # counter for the total sum
 tot = 0
 # Absorption Spectrum, Dispersion Spectrum, and combined Calculations
+
+
 
 # make a fft toggle and only effects the for statements
 for b in freq:
@@ -218,13 +217,7 @@ for b in y8:
 y13 = (y12/np.max(y8))*scale
 y14 = y13+shift
 y11 = np.sqrt(y8**2+y19**2)
-
-# fft toggle starts here
-if fftVar=='N':
-    y18 = np.sqrt(y8**2+y10**2)
-else:
-    y18 = np.sqrt(y8**2+y10**2)
-    #y18 = np.fft.fft(y5)
+y18 = np.sqrt(y8**2+y10**2)
     
 y15 = np.array([])
 for b in y11:
@@ -259,27 +252,11 @@ y17 = y16+shift1
 # Makes the second figure and makes 10 seperate smaller graphs
 fig = plt.figure()
 # Take the x and y values found above and plot them on the figure
-ax1 = plt.subplot2grid(shape=(5, 2), loc=(0, 0))
-ax2 = plt.subplot2grid(shape=(5, 2), loc=(0, 1))
-ax3 = plt.subplot2grid(shape=(5, 2), loc=(1, 0))
-ax4 = plt.subplot2grid((5, 2), (1, 1))
-ax5 = plt.subplot2grid((5, 2), (2, 0))
-ax6 = plt.subplot2grid((5, 2), (2, 1))
-ax7 = plt.subplot2grid((5, 2), (3, 0))
-ax8 = plt.subplot2grid((5, 2), (3, 1))
-ax9 = plt.subplot2grid(shape=(5, 2), loc=(4, 0), colspan=2)
-d, = ax1.plot(x, y1)
-ax1.set_title('Period 1')
-d1, = ax2.plot(x, y2, 'tab:orange')
-ax2.set_title('Period 2')
-d2, = ax3.plot(x, y3, 'tab:blue')
-ax3.set_title('Period 3')
-d3, = ax4.plot(x, y4, 'tab:red')
-ax4.set_title('Period 4')
+ax6 = plt.subplot2grid((2, 2), (0, 0))
+ax7 = plt.subplot2grid((2, 2), (0, 1))
+ax8 = plt.subplot2grid((2, 2), (1, 0))
+ax9 = plt.subplot2grid(shape=(2, 2), loc=(1, 1))
 d4, = ax6.plot(x, y5, 'tab:blue')
-ax6.set_title('Combined FID')
-d5, = ax5.plot(x, y6, 'tab:purple')
-ax5.set_title('FID period 1')
 d6, = ax7.plot(freqRad, y8, 'tab:blue')
 ax7.set_title('Absorption Spectrum')
 d7, = ax8.plot(freqRad, y9, 'tab:blue')
@@ -291,27 +268,7 @@ ax9.set_title('Combined Phase Absorption and Dispersion')
 ax9.set(xlabel='Frequency(Hz)', ylabel='Intensity(A.U.)')
 ax7.set(xlabel='Frequency(Hz)', ylabel='Intensity(A.I.)')
 ax8.set(xlabel='Frequency(Hz)', ylabel='Intensity(A.U.)')
-ax5.set(xlabel='Time', ylabel='Relative Intensity(A.I.)')
 ax6.set(xlabel='Time', ylabel='Relative Intensity(A.I.)')
-ax4.set(xlabel='Time', ylabel='Intensity(A.I.)')
-ax3.set(xlabel='Time', ylabel='Intensity(A.I.)')
-ax2.set(xlabel='Time', ylabel='Intensity(A.I.)')
-ax1.set(xlabel='Time', ylabel='Intensity(A.I.)')
-ax1.axhline(y=0, color='k')
-ax1.axvline(x=0, color='k')
-ax1.grid(True, which='both')
-ax2.axhline(y=0, color='k')
-ax2.axvline(x=0, color='k')
-ax2.grid(True, which='both')
-ax3.axhline(y=0, color='k')
-ax3.axvline(x=0, color='k')
-ax3.grid(True, which='both')
-ax4.axhline(y=0, color='k')
-ax4.axvline(x=0, color='k')
-ax4.grid(True, which='both')
-ax5.axhline(y=0, color='k')
-ax5.axvline(x=0, color='k')
-ax5.grid(True, which='both')
 ax6.axhline(y=0, color='k')
 ax6.axvline(x=0, color='k')
 ax6.grid(True, which='both')
@@ -479,18 +436,8 @@ def update(val):
     #     p.write('\n')
     # p.close()
     # resets the data of the UI slider/UI that was changed
-    d.set_ydata(y1)
-    d.set_xdata(x)
-    d1.set_ydata(y2)
-    d1.set_xdata(x)
-    d2.set_ydata(y3)
-    d2.set_xdata(x)
-    d3.set_ydata(y4)
-    d3.set_xdata(x)
     d4.set_ydata(y5)
     d4.set_xdata(x)
-    d5.set_ydata(y6)
-    d5.set_xdata(x)
     d6.set_ydata(y8)
     d6.set_xdata(freqRad)
     d7.set_ydata(y9)
@@ -502,20 +449,7 @@ def update(val):
     d11.set_ydata(y17)
     d11.set_xdata(freqRad)
     # update ax.viewLim using the new dataLim
-    
-    ax1.set_xlim(0, 636*time)
-    ax2.set_xlim(0, 636*time)
-    ax1.set_ylim(-(inten), inten)
-    ax2.set_ylim(-inten1, inten1)
 
-    ax3.set_xlim(0, 636*time)
-    ax4.set_xlim(0, 636*time)
-    ax3.set_ylim(-inten2, inten2)
-    ax4.set_ylim(-inten3, inten3)
-
-    ax5.set_xlim(0, 636*time)
-    ax6.set_xlim(0, 636*time)
-    ax5.set_ylim(-inten, inten)
     ax6.set_ylim(min(y5), max(y5))
 
     ax7.set_xlim(0,max(freqRad))
@@ -559,5 +493,5 @@ button.on_clicked(reset)
 radio2.on_clicked(update)
 
 # displays everything on the figures
-plt.tight_layout(pad=0, w_pad=-2, h_pad=-2)
+#plt.tight_layout(pad=0, w_pad=-2, h_pad=-2)
 plt.show()

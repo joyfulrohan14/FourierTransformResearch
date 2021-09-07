@@ -3,14 +3,12 @@ import numpy as np  # libary to operate arrays
 import math
 from matplotlib.widgets import Slider, Button, TextBox, RadioButtons
 
-# UI -Time, Intensity, Frequ, Integral Correction, phase
-# Slider - Frequency, Half Life , Aquition Time
 
-# User input acquition, second number is FID acquition time divided by number of points to get time incremenets
-# Grab the file
 
-# alternate apodization functions
-#code starts
+#take away x number of points
+# fix the dashboard
+#display only 200 points 
+
 fileName = "ascii-fid1.txt"#input("Please enter file name with data (format point number, number): ")
 acquTime = input("Enter the time (s) that it took to acquire your data: ")
 fid = []
